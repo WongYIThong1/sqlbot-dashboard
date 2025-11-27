@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
 import { motion } from "framer-motion";
+import { Eye, EyeOff } from "lucide-react";
 import { showErrorToast, showSuccessToast } from "@/components/ui/app-toast";
 
 const initialForm = {
@@ -16,6 +17,7 @@ const initialForm = {
 export default function SignupPage() {
     const [formValues, setFormValues] = useState(initialForm);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const router = useRouter();
 
     const handleChange =
@@ -159,17 +161,28 @@ export default function SignupPage() {
                         <label htmlFor="password" className="text-sm font-medium text-zinc-300 block">
                             Password
                         </label>
-                        <input
-                            id="password"
-                            type="password"
-                            placeholder="********"
-                            autoComplete="new-password"
-                            value={formValues.password}
-                            onChange={handleChange("password")}
-                            className="w-full bg-zinc-900/50 border border-zinc-800 rounded-lg px-4 py-3 text-white placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-white/20 transition-all duration-200"
-                            required
-                            disabled={isSubmitting}
-                        />
+                        <div className="relative">
+                            <input
+                                id="password"
+                                type={showPassword ? "text" : "password"}
+                                placeholder="********"
+                                autoComplete="new-password"
+                                value={formValues.password}
+                                onChange={handleChange("password")}
+                                className="w-full bg-zinc-900/50 border border-zinc-800 rounded-lg px-4 py-3 pr-12 text-white placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-white/20 transition-all duration-200"
+                                required
+                                disabled={isSubmitting}
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white transition-colors p-1"
+                                aria-label={showPassword ? "Hide password" : "Show password"}
+                                disabled={isSubmitting}
+                            >
+                                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                            </button>
+                        </div>
                     </motion.div>
 
                     <motion.div

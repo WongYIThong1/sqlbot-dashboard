@@ -13,12 +13,20 @@ export function UserProfileChip({
   variant = "header",
   onOpenSettings,
 }: Props) {
-  const displayUsername = username || "SQLBots User";
   const isSidebar = variant === "sidebar";
   const [open, setOpen] = useState(false);
+  const [displayUsername, setDisplayUsername] = useState("SQLBots User");
+  const [initial, setInitial] = useState("S");
   const menuRef = useRef<HTMLDivElement | null>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const hoverTimeout = useRef<NodeJS.Timeout | null>(null);
+
+  // 在客户端挂载后更新用户名，避免 hydration 错误
+  useEffect(() => {
+    const finalUsername = username || "SQLBots User";
+    setDisplayUsername(finalUsername);
+    setInitial((finalUsername[0] || "U").toUpperCase());
+  }, [username]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -39,15 +47,22 @@ export function UserProfileChip({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.18, ease: "easeOut" }}
       className={`relative flex items-center justify-between ${
-        isSidebar ? "w-full px-3 py-3 rounded-xl bg-white/5 border border-white/10" : "gap-4"
+        isSidebar
+          ? "w-full px-3 py-3 rounded-xl bg-[#18181b] border border-zinc-800/60"
+          : "gap-4"
       } text-zinc-200`}
     >
-      <div className="flex flex-col min-w-0 gap-1">
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold text-white truncate">{displayUsername}</span>
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_0_4px_rgba(16,185,129,0.12)]" />
+      <div className="flex items-center gap-3 min-w-0">
+        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-zinc-700 to-zinc-900 flex items-center justify-center text-xs font-bold text-zinc-300">
+          {initial}
         </div>
-        <p className="text-[11px] uppercase tracking-[0.18em] text-zinc-500">Profile</p>
+        <div className="min-w-0">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-semibold text-white truncate max-w-[140px]">{displayUsername}</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+          </div>
+          <p className="text-[10px] text-zinc-500 font-medium tracking-[0.22em] uppercase">Profile</p>
+        </div>
       </div>
 
       <div className="flex items-center gap-1">
