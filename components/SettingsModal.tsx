@@ -379,16 +379,16 @@ export function SettingsModal({ open, onClose, user, onLogout }: Props) {
                 </button>
               </form>
 
-              <div className="rounded-xl border border-white/10 bg-white/5 p-4 space-y-3">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-xs uppercase tracking-[0.18em] text-zinc-500">API Access</p>
-                    <p className="text-base font-semibold text-white">API Key</p>
-                  </div>
+            <div className="rounded-xl border border-white/10 bg-white/5 p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs uppercase tracking-[0.18em] text-zinc-500">API Access</p>
+                  <p className="text-base font-semibold text-white">API Key</p>
+                </div>
                   {apiKey && (
-                    <button
-                      onClick={handleCopy}
-                      disabled={isCopying}
+                  <button
+                    onClick={handleCopy}
+                    disabled={isCopying}
                       className="p-2 rounded-lg bg-white/10 text-white border border-white/15 hover:bg-white/15 disabled:opacity-60 transition-colors"
                       aria-label="Copy API key"
                     >
@@ -450,7 +450,7 @@ export function SettingsModal({ open, onClose, user, onLogout }: Props) {
                         onClick={handleTestWebhook}
                         disabled={isTestingWebhook || !discordWebhook.trim()}
                         className="px-4 py-2 rounded-lg text-sm bg-blue-500/15 text-blue-200 border border-blue-500/25 hover:bg-blue-500/25 disabled:opacity-60 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
-                      >
+                  >
                         {isTestingWebhook ? "Testing..." : "Test Webhook"}
                       </button>
                     </div>
@@ -473,7 +473,7 @@ export function SettingsModal({ open, onClose, user, onLogout }: Props) {
                           discordNotification ? "translate-x-6" : "translate-x-1"
                         }`}
                       />
-                    </button>
+                  </button>
                   </div>
                   <button
                     onClick={handleSaveDiscordSettings}

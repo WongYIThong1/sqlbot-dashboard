@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { Home, CheckSquare, Server, History, Wrench } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, useCallback } from "react";
@@ -42,16 +41,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    
-    // 验证 token 的有效性，而不仅仅是检查是否存在
-    const userData = decodeUserFromToken();
-    if (!userData) {
-      // Token 不存在或无效，重定向到登录页
+    const token = localStorage.getItem("sqlbots_token");
+    if (!token) {
       router.replace("/login");
       return;
     }
-    
-    // Token 有效，更新用户状态
+    // 验证 token 并解码用户信息
+    const userData = decodeUserFromToken();
+    // 如果 token 无法解码或缺少必需字段（如 username），重定向到登录页
+    if (!userData || !userData.username) {
+      router.replace("/login");
+      return;
+    }
+    // 更新用户状态
     setUser(userData);
   }, [router]);
 
@@ -64,10 +66,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   return (
     <div className="flex h-screen bg-black text-white overflow-hidden font-sans">
       {/* Sidebar */}
-      <motion.aside
-        initial={{ x: -10, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        transition={{ duration: 0.35, ease: "easeOut" }}
+      <aside
         className="w-[15%] min-w-[220px] flex-shrink-0 border-r border-white/10 bg-[#0c0c0f] flex flex-col"
       >
         <div className="px-4 pt-6 pb-5">
@@ -96,17 +95,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             );
           })}
         </nav>
-      </motion.aside>
+      </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto relative bg-black">
+      <main className="flex-1 overflow-y-auto relative bg-black flex flex-col">
         <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
           <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-white/5 rounded-full blur-[120px] opacity-50" />
           <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-white/5 rounded-full blur-[120px] opacity-50" />
         </div>
 
-        <div className="relative z-10">{children}</div>
+        <div className="relative z-10 flex-1 flex flex-col min-h-0">{children}</div>
       </main>
+
       <SettingsModal open={showSettings} onClose={() => setShowSettings(false)} user={user ?? undefined} onLogout={handleLogout} />
     </div>
   );

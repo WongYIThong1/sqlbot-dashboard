@@ -2,19 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  Activity,
-  CheckSquare,
-  Clock,
-  Database,
-  FileText,
-  Link,
-  Monitor,
-  Search,
-  Server,
-  ShieldAlert,
-  Syringe,
-} from "lucide-react";
+import { Activity, CheckSquare, Clock, Database, FileText, Link, Monitor, Search, Server, ShieldAlert, Syringe } from "lucide-react";
 
 type StatItem = {
   title: string;
@@ -34,31 +22,43 @@ type ActivityItem = {
   iconBg: string;
 };
 
+function decodeUsername(): string {
+  if (typeof window === "undefined") return "User";
+  const token = localStorage.getItem("sqlbots_token");
+  if (!token) return "User";
+  try {
+    const [, payload] = token.split(".");
+    const decoded = JSON.parse(atob(payload ?? ""));
+    return decoded?.username || "User";
+  } catch {
+    return "User";
+  }
+}
+
 export default function DashboardPage() {
   const router = useRouter();
-  const [username, setUsername] = useState("User");
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [username, setUsername] = useState<string>("User");
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    
     const token = localStorage.getItem("sqlbots_token");
     if (!token) {
       router.replace("/login");
       return;
     }
-
     // 验证 token 并解码用户名
     try {
       const [, payload] = token.split(".");
       const decoded = JSON.parse(atob(payload ?? ""));
-      if (decoded?.username) {
-        setUsername(decoded.username);
-        setIsAuthenticated(true);
-      } else {
+      // 如果 token 无法解码或缺少 username 字段，重定向到登录页
+      if (!decoded?.username) {
         router.replace("/login");
+        return;
       }
+      // 在客户端设置用户名，避免 hydration mismatch
+      setUsername(decoded.username);
     } catch {
+      // Token 格式错误，重定向到登录页
       router.replace("/login");
     }
   }, [router]);
@@ -83,11 +83,6 @@ export default function DashboardPage() {
     { id: "4", title: "Server Restart", subtext: "worker-node-04", time: "3h ago", icon: Server, iconColor: "text-orange-500", iconBg: "bg-orange-500/10" },
     { id: "5", title: "File Uploaded", subtext: "config_backup.json", time: "5h ago", icon: FileText, iconColor: "text-zinc-400", iconBg: "bg-zinc-800/50" },
   ];
-
-  // 如果未认证，不渲染内容（等待重定向）
-  if (!isAuthenticated) {
-    return null;
-  }
 
   return (
     <div className="p-4 lg:p-6 max-w-[1600px] mx-auto text-zinc-100 space-y-4 min-h-screen">

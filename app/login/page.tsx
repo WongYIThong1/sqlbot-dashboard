@@ -144,17 +144,17 @@ export default function LoginPage() {
                             </label>
                         </div>
                         <div className="relative">
-                            <input
-                                id="password"
+                        <input
+                            id="password"
                                 type={showPassword ? "text" : "password"}
-                                placeholder="********"
-                                autoComplete="current-password"
-                                value={formValues.password}
-                                onChange={handleChange("password")}
+                            placeholder="********"
+                            autoComplete="current-password"
+                            value={formValues.password}
+                            onChange={handleChange("password")}
                                 className="w-full bg-zinc-900/50 border border-zinc-800 rounded-lg px-4 py-3 pr-12 text-white placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-white/20 transition-all duration-200"
-                                required
-                                disabled={isSubmitting}
-                            />
+                            required
+                            disabled={isSubmitting}
+                        />
                             <button
                                 type="button"
                                 onClick={() => setShowPassword(!showPassword)}
