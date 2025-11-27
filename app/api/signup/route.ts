@@ -90,6 +90,10 @@ export async function POST(request: Request) {
 
   const passwordHash = await bcrypt.hash(password, 10);
 
+  // Generate API key
+  const apiKeyBytes = crypto.getRandomValues(new Uint8Array(18));
+  const apiKey = Array.from(apiKeyBytes, (b) => b.toString(16).padStart(2, "0")).join("").slice(0, 32);
+
   const { data: newUser, error: userInsertError } = await supabaseAdmin
     .from("users")
     .insert({
@@ -97,6 +101,7 @@ export async function POST(request: Request) {
       email,
       password_hash: passwordHash,
       license_id: licenseRecord.id,
+      api_key: apiKey,
     })
     .select("id")
     .single();

@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import { showErrorToast, showSuccessToast } from "@/components/ui/app-toast";
 
 const initialForm = {
-    email: "",
+    username: "",
     password: "",
 };
 
@@ -114,16 +114,16 @@ export default function LoginPage() {
                         transition={{ delay: 0.3, duration: 0.4 }}
                         className="space-y-2"
                     >
-                        <label htmlFor="email" className="text-sm font-medium text-zinc-300 block">
-                            Email
+                        <label htmlFor="username" className="text-sm font-medium text-zinc-300 block">
+                            Username
                         </label>
                         <input
-                            id="email"
-                            type="email"
-                            placeholder="name@example.com"
-                            value={formValues.email}
-                            autoComplete="email"
-                            onChange={handleChange("email")}
+                            id="username"
+                            type="text"
+                            placeholder="johndoe"
+                            value={formValues.username ?? ""}
+                            autoComplete="username"
+                            onChange={handleChange("username")}
                             className="w-full bg-zinc-900/50 border border-zinc-800 rounded-lg px-4 py-3 text-white placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-white/20 transition-all duration-200"
                             required
                             disabled={isSubmitting}
@@ -140,9 +140,6 @@ export default function LoginPage() {
                             <label htmlFor="password" className="text-sm font-medium text-zinc-300 block">
                                 Password
                             </label>
-                            <Link href="#" className="text-xs text-zinc-400 hover:text-white transition-colors">
-                                Forgot password?
-                            </Link>
                         </div>
                         <input
                             id="password"

@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabaseClient";
 
 type LoginPayload = {
-  email?: string;
+  username?: string;
   password?: string;
 };
 
@@ -27,12 +27,12 @@ export async function POST(request: Request) {
     );
   }
 
-  const email = body.email?.trim().toLowerCase() ?? "";
+  const username = body.username?.trim() ?? "";
   const password = body.password ?? "";
 
-  if (!email || !password) {
+  if (!username || !password) {
     return NextResponse.json(
-      { success: false, message: "Email and password are required." },
+      { success: false, message: "Username and password are required." },
       { status: 400 },
     );
   }
@@ -40,12 +40,12 @@ export async function POST(request: Request) {
   const { data: user, error } = await supabaseAdmin
     .from("users")
     .select("id, email, username, password_hash")
-    .eq("email", email)
+    .eq("username", username)
     .single();
 
   if (error || !user) {
     return NextResponse.json(
-      { success: false, message: "Invalid email or password." },
+      { success: false, message: "Invalid username or password." },
       { status: 401 },
     );
   }
@@ -54,7 +54,7 @@ export async function POST(request: Request) {
 
   if (!passwordMatches) {
     return NextResponse.json(
-      { success: false, message: "Invalid email or password." },
+      { success: false, message: "Invalid username or password." },
       { status: 401 },
     );
   }

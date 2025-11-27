@@ -68,14 +68,14 @@ Behavior:
 
 ```json
 {
-  "email": "john@example.com",
+  "username": "johndoe",
   "password": "super-secret"
 }
 ```
 
 Behavior:
 
-- Validate email and password; on failure return `401`.
+- Validate username and password; on failure return `401`.
 - On success return `{ token, user }`; `token` is a 2-hour JWT that can be stored in `localStorage` for later requests.
 
 ## Manual Test Flow
@@ -83,5 +83,5 @@ Behavior:
 1. In Supabase, add a `licenses` row with `user_id = null` and an unused `license_key`.
 2. Open `/signup`, fill username/email/password/license key, then submit.
 3. After success, verify in Supabase that `users` has the new row and `licenses.user_id` points to it.
-4. Use the new email/password at `/login`; confirm success, `localStorage.sqlbots_token` exists, and you are redirected to `/dashboard` within 2 seconds.
+4. Use the new username/password at `/login`; confirm success, `localStorage.sqlbots_token` exists, and you are redirected to `/dashboard` within 2 seconds.
 "# sqlbot-dashboard" 
