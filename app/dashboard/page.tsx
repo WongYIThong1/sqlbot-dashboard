@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   Activity,
@@ -39,17 +39,16 @@ export default function DashboardPage() {
   const [username, setUsername] = useState("User");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // 在客户端挂载后读取用户名，避免 hydration 错误
   useEffect(() => {
-    const token = localStorage.getItem("sqlbots_token");
+    if (typeof window === "undefined") return;
     
-    // 认证检查：如果没有 token，重定向到登录页
+    const token = localStorage.getItem("sqlbots_token");
     if (!token) {
       router.replace("/login");
       return;
     }
 
-    // 验证 token 是否有效
+    // 验证 token 并解码用户名
     try {
       const [, payload] = token.split(".");
       const decoded = JSON.parse(atob(payload ?? ""));
@@ -91,64 +90,60 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="p-6 lg:p-10 max-w-[1600px] mx-auto text-zinc-100 space-y-8">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+    <div className="p-4 lg:p-6 max-w-[1600px] mx-auto text-zinc-100 space-y-4 min-h-screen">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-bold text-white tracking-tight mb-1">Hello, {username}</h1>
-          <p className="text-zinc-500 text-sm">Welcome back. System is running optimally.</p>
+          <h1 className="text-2xl lg:text-3xl font-bold text-white tracking-tight">Hello, {username}</h1>
+          <p className="text-zinc-500 text-xs lg:text-sm mt-0.5">Welcome back. System is running optimally.</p>
         </div>
-        <div className="flex items-center gap-3">
-          <button className="flex items-center gap-2 px-4 py-2 bg-[#18181b] hover:bg-[#27272a] text-zinc-300 text-sm font-medium rounded-lg border border-white/10 transition-colors">
-            <Clock size={16} />
+        <div className="flex items-center gap-2">
+          <button className="flex items-center gap-2 px-3 py-1.5 bg-[#18181b] hover:bg-[#27272a] text-zinc-300 text-xs lg:text-sm font-medium rounded-lg border border-white/10 transition-colors">
+            <Clock size={14} />
             <span>Last 24h</span>
           </button>
-          <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium rounded-lg shadow-lg shadow-blue-900/20 transition-all">
+          <button className="flex items-center gap-2 px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-xs lg:text-sm font-medium rounded-lg shadow-lg shadow-blue-900/20 transition-all">
             <span>+ New Scan</span>
           </button>
         </div>
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {stats.map((stat, index) => (
           <StatCard key={index} {...stat} />
         ))}
       </div>
 
-      {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[520px]">
-        {/* Announcements */}
-        <div className="lg:col-span-2 bg-[#09090b] border border-white/5 rounded-xl p-6 relative overflow-hidden flex flex-col">
-          <div className="flex items-center justify-between mb-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="lg:col-span-2 bg-[#09090b] border border-white/5 rounded-xl p-4 lg:p-5 relative overflow-hidden flex flex-col">
+          <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <Activity size={18} className="text-indigo-500" />
-              <h3 className="text-sm font-semibold text-white">Announcements</h3>
+              <Activity size={16} className="text-indigo-500" />
+              <h3 className="text-xs lg:text-sm font-semibold text-white">Announcements</h3>
             </div>
-            <div className="flex items-center gap-2 text-xs text-zinc-500">
-              <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
+            <div className="flex items-center gap-2 text-[10px] lg:text-xs text-zinc-500">
+              <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
               Live Updates
             </div>
           </div>
 
-          <div className="flex-1 relative z-10 space-y-4">
+          <div className="flex-1 relative z-10 space-y-2.5">
             <div className="absolute inset-0 translate-y-20 opacity-20 pointer-events-none">
               <svg viewBox="0 0 100 20" className="w-full h-full fill-indigo-500/10 stroke-indigo-500/20 stroke-1">
                 <path d="M0,15 Q10,5 20,15 T40,15 T60,5 T80,15 T100,10 V20 H0 Z" />
               </svg>
             </div>
 
-            <div className="grid gap-3 relative">
+            <div className="grid gap-2.5 relative">
               {announcements.map((item) => (
                 <div
                   key={item.id}
-                  className="group flex items-center justify-between p-4 rounded-lg bg-zinc-900/40 border border-white/5 hover:bg-zinc-900/80 hover:border-white/10 transition-all cursor-pointer"
+                  className="group flex items-center justify-between p-3 rounded-lg bg-zinc-900/40 border border-white/5 hover:bg-zinc-900/80 hover:border-white/10 transition-all cursor-pointer"
                 >
-                  <div className="flex flex-col gap-1">
-                    <div className="flex items-center gap-3">
-                      <span className="text-sm font-medium text-zinc-200 group-hover:text-white">{item.title}</span>
+                  <div className="flex flex-col gap-0.5 min-w-0 flex-1">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-xs lg:text-sm font-medium text-zinc-200 group-hover:text-white truncate">{item.title}</span>
                       <span
-                        className={`text-[10px] px-1.5 py-0.5 rounded border ${
+                        className={`text-[9px] lg:text-[10px] px-1.5 py-0.5 rounded border shrink-0 ${
                           item.tag === "URGENT"
                             ? "bg-rose-500/10 text-rose-400 border-rose-500/20"
                             : item.tag === "FEATURE"
@@ -159,20 +154,19 @@ export default function DashboardPage() {
                         {item.tag}
                       </span>
                     </div>
-                    <span className="text-xs text-zinc-500">{item.desc}</span>
+                    <span className="text-[10px] lg:text-xs text-zinc-500 line-clamp-1">{item.desc}</span>
                   </div>
-                  <span className="text-xs text-zinc-600 font-mono">{item.time}</span>
+                  <span className="text-[10px] lg:text-xs text-zinc-600 font-mono ml-2 shrink-0">{item.time}</span>
                 </div>
               ))}
 
-              <div className="p-4 rounded-lg border border-dashed border-white/5 flex items-center justify-center text-zinc-700 text-xs">
+              <div className="p-3 rounded-lg border border-dashed border-white/5 flex items-center justify-center text-zinc-700 text-[10px] lg:text-xs">
                 No more new announcements
               </div>
             </div>
           </div>
         </div>
 
-        {/* Recent Activity */}
         <div className="lg:col-span-1 h-full">
           <RecentActivity activities={recentActivity} />
         </div>
@@ -183,14 +177,14 @@ export default function DashboardPage() {
 
 function StatCard({ title, value, icon: Icon, trend, trendUp }: StatItem) {
   return (
-    <div className="p-4 rounded-xl bg-[#0c0c0f] border border-white/5 flex items-center justify-between hover:border-white/10 transition-colors">
-      <div className="space-y-1">
-        <p className="text-sm text-zinc-500">{title}</p>
-        <p className="text-2xl font-semibold text-white">{value}</p>
-        <p className={`text-xs font-semibold ${trendUp ? "text-emerald-400" : "text-rose-400"}`}>{trend}</p>
+    <div className="p-3 lg:p-4 rounded-xl bg-[#0c0c0f] border border-white/5 flex items-center justify-between hover:border-white/10 transition-colors">
+      <div className="space-y-0.5 min-w-0 flex-1">
+        <p className="text-xs lg:text-sm text-zinc-500 truncate">{title}</p>
+        <p className="text-xl lg:text-2xl font-semibold text-white">{value}</p>
+        <p className={`text-[10px] lg:text-xs font-semibold ${trendUp ? "text-emerald-400" : "text-rose-400"}`}>{trend}</p>
       </div>
-      <div className="w-11 h-11 rounded-xl bg-white/5 flex items-center justify-center border border-white/10 text-white">
-        <Icon size={20} />
+      <div className="w-9 h-9 lg:w-11 lg:h-11 rounded-xl bg-white/5 flex items-center justify-center border border-white/10 text-white shrink-0 ml-2">
+        <Icon size={18} className="lg:w-5 lg:h-5" />
       </div>
     </div>
   );
@@ -198,30 +192,30 @@ function StatCard({ title, value, icon: Icon, trend, trendUp }: StatItem) {
 
 function RecentActivity({ activities }: { activities: ActivityItem[] }) {
   return (
-    <div className="h-full bg-[#0c0c0f] border border-white/5 rounded-xl p-5 flex flex-col">
-      <div className="flex items-center justify-between mb-4">
+    <div className="h-full bg-[#0c0c0f] border border-white/5 rounded-xl p-4 lg:p-5 flex flex-col">
+      <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <CheckSquare size={18} className="text-emerald-400" />
-          <h3 className="text-sm font-semibold text-white">Recent Activity</h3>
+          <CheckSquare size={16} className="text-emerald-400" />
+          <h3 className="text-xs lg:text-sm font-semibold text-white">Recent Activity</h3>
         </div>
-        <span className="text-xs text-zinc-500">Auto-refresh</span>
+        <span className="text-[10px] lg:text-xs text-zinc-500">Auto-refresh</span>
       </div>
-      <div className="space-y-3 overflow-y-auto pr-1">
+      <div className="space-y-2 overflow-y-auto pr-1 flex-1">
         {activities.map((item) => (
           <div
             key={item.id}
-            className="flex items-center justify-between p-3 rounded-lg bg-black/30 border border-white/5 hover:border-white/10 transition-colors"
+            className="flex items-center justify-between p-2.5 rounded-lg bg-black/30 border border-white/5 hover:border-white/10 transition-colors"
           >
-            <div className="flex items-center gap-3">
-              <div className={`w-9 h-9 rounded-lg ${item.iconBg} flex items-center justify-center`}>
-                <item.icon size={18} className={item.iconColor} />
+            <div className="flex items-center gap-2.5 min-w-0 flex-1">
+              <div className={`w-8 h-8 lg:w-9 lg:h-9 rounded-lg ${item.iconBg} flex items-center justify-center shrink-0`}>
+                <item.icon size={16} className={`${item.iconColor} lg:w-[18px] lg:h-[18px]`} />
               </div>
-              <div>
-                <p className="text-sm font-medium text-white">{item.title}</p>
-                <p className="text-xs text-zinc-500">{item.subtext}</p>
+              <div className="min-w-0 flex-1">
+                <p className="text-xs lg:text-sm font-medium text-white truncate">{item.title}</p>
+                <p className="text-[10px] lg:text-xs text-zinc-500 truncate">{item.subtext}</p>
               </div>
             </div>
-            <span className="text-[11px] text-zinc-500">{item.time}</span>
+            <span className="text-[10px] lg:text-[11px] text-zinc-500 ml-2 shrink-0">{item.time}</span>
           </div>
         ))}
       </div>

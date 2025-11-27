@@ -34,21 +34,25 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const pathname = usePathname();
   const router = useRouter();
 
-  // 在客户端挂载后读取用户信息，避免 hydration 错误
-  useEffect(() => {
-    const userData = decodeUserFromToken();
-    setUser(userData);
-    
-    // 认证检查：如果没有 token，重定向到登录页
-    if (!userData) {
-      router.replace("/login");
-    }
-  }, [router]);
-
   const handleLogout = useCallback(() => {
     localStorage.removeItem("sqlbots_token");
     document.cookie = "sqlbots_token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
     router.replace("/login");
+  }, [router]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    
+    // 验证 token 的有效性，而不仅仅是检查是否存在
+    const userData = decodeUserFromToken();
+    if (!userData) {
+      // Token 不存在或无效，重定向到登录页
+      router.replace("/login");
+      return;
+    }
+    
+    // Token 有效，更新用户状态
+    setUser(userData);
   }, [router]);
 
   useEffect(() => {
@@ -96,13 +100,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto relative bg-black">
-        {/* Decorative background blobs */}
         <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
           <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-white/5 rounded-full blur-[120px] opacity-50" />
           <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-white/5 rounded-full blur-[120px] opacity-50" />
         </div>
 
-        <div className="relative z-10 p-8">{children}</div>
+        <div className="relative z-10">{children}</div>
       </main>
       <SettingsModal open={showSettings} onClose={() => setShowSettings(false)} user={user ?? undefined} onLogout={handleLogout} />
     </div>

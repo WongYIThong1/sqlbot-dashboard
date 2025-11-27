@@ -8,25 +8,15 @@ type Props = {
   onOpenSettings?: () => void;
 };
 
-export function UserProfileChip({
-  username,
-  variant = "header",
-  onOpenSettings,
-}: Props) {
+export function UserProfileChip({ username, variant = "header", onOpenSettings }: Props) {
+  const displayUsername = username || "SQLBots User";
+  const initial = (displayUsername[0] || "U").toUpperCase();
   const isSidebar = variant === "sidebar";
+
   const [open, setOpen] = useState(false);
-  const [displayUsername, setDisplayUsername] = useState("SQLBots User");
-  const [initial, setInitial] = useState("S");
   const menuRef = useRef<HTMLDivElement | null>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const hoverTimeout = useRef<NodeJS.Timeout | null>(null);
-
-  // 在客户端挂载后更新用户名，避免 hydration 错误
-  useEffect(() => {
-    const finalUsername = username || "SQLBots User";
-    setDisplayUsername(finalUsername);
-    setInitial((finalUsername[0] || "U").toUpperCase());
-  }, [username]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -47,9 +37,7 @@ export function UserProfileChip({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.18, ease: "easeOut" }}
       className={`relative flex items-center justify-between ${
-        isSidebar
-          ? "w-full px-3 py-3 rounded-xl bg-[#18181b] border border-zinc-800/60"
-          : "gap-4"
+        isSidebar ? "w-full px-3 py-3 rounded-xl bg-[#18181b] border border-zinc-800/60" : "gap-4"
       } text-zinc-200`}
     >
       <div className="flex items-center gap-3 min-w-0">
