@@ -24,3 +24,32 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.glass-toast {
+  backdrop-filter: blur(18px) saturate(140%);
+  background: rgba(10, 10, 12, 0.72); /* darker to match site */
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 18px 38px rgba(0, 0, 0, 0.28),
+    0 8px 18px rgba(0, 0, 0, 0.18);
+}
+
+.glass-title {
+  color: #f8fafc;
+}
+
+.glass-desc {
+  color: rgba(248, 250, 252, 0.75);
+}
+
+.glass-action {
+  background: rgba(255, 255, 255, 0.06);
+  color: #f8fafc;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.15s ease;
+}
+
+.glass-action:hover {
+  background: rgba(255, 255, 255, 0.12);
+  transform: translateY(-1px);
+}
