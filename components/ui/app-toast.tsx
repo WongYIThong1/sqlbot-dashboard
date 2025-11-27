@@ -3,6 +3,7 @@
 import { CheckCircleIcon, ExclamationTriangleIcon, SparklesIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { toast } from "sonner";
 import clsx from "clsx";
+import type { ReactNode } from "react";
 
 type ToastType = "success" | "error" | "info";
 
@@ -20,7 +21,7 @@ type ToastProps = {
 };
 
 type ToneEntry = {
-  icon: JSX.Element;
+  icon: ReactNode;
   accent: string;
   container: string;
 };
